@@ -139,7 +139,7 @@ class FlexContainer extends SimpleContainer {
 
     layout() {
         var leftOffset = 50;
-        
+
         //i.e. 50 pixel padding on either side, minus 20 for every child
         var availableWidth = this.canvas.$el.width() - 100 - (20 * (this.childElements.length - 1));
 
@@ -151,7 +151,7 @@ class FlexContainer extends SimpleContainer {
                 width: elemWidth,
                 top: this.canvas.$el.height() / 2 - 50,
                 left: leftOffset
-            });
+            }, true);
             leftOffset = leftOffset + elemWidth + 20;
         });
     }
