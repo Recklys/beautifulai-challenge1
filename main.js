@@ -3,7 +3,8 @@ class App {
         this.canvas = new SlideCanvas();
         $("body").append(this.canvas.render());
 
-        this.canvas.addElement(new SimpleContainer());
+        //this.canvas.addElement(new SimpleContainer());
+        this.canvas.addElement(new FlexContainer());
 
         this.canvas.layout(false);
         $(window).on("resize", () => {
@@ -117,4 +118,49 @@ class SimpleContainer extends BaseElement {
     }
 }
 
+class FlexContainer extends SimpleContainer {
+
+    render() {
+        this.$el = $("<div/>");
+        this.$el.addClass("element");
+        this.addNewBox();
+
+        return this.$el;
+    }
+
+    renderUI() {
+        var $button = $("<div/>").addClass("control").text("Add Item");
+        this.$el.prepend($button);
+
+        $button.on("click", () => {
+            this.addNewBox();
+        });
+    }
+
+    layout() {
+        var leftOffset = 50;
+        
+        //i.e. 50 pixel padding on either side, minus 20 for every child
+        var availableWidth = this.canvas.$el.width() - 100 - (20 * (this.childElements.length - 1));
+
+        this.childElements.forEach((elem, index, children) => {
+            var elemWidth = availableWidth / children.length;
+
+            elem.layout({
+                height: '100px',
+                width: elemWidth,
+                top: this.canvas.$el.height() / 2 - 50,
+                left: leftOffset
+            });
+            leftOffset = leftOffset + elemWidth + 20;
+        });
+    }
+
+    addNewBox() {
+        var newBox = new SimpleBox(this.childElements.length);
+        this.addChildElement(newBox);
+        this.layout();
+    }
+
+}
 
