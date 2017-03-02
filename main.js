@@ -116,6 +116,14 @@ class SimpleContainer extends BaseElement {
         this.$el.append(element.render());
         element.renderUI();
     }
+
+    removeChildElement(element) {
+        this.childElements.splice(this.childElements.indexOf(element), 1);
+        element.$el.remove();
+        this.childElements.forEach((elem, index) => {
+            elem.setLabel(index);
+        });
+    }
 }
 
 class FlexContainer extends SimpleContainer {
@@ -157,10 +165,28 @@ class FlexContainer extends SimpleContainer {
     }
 
     addNewBox() {
-        var newBox = new SimpleBox(this.childElements.length);
+        var newBox = new SimpleDeletableBox(this.childElements.length);
         this.addChildElement(newBox);
         this.layout();
     }
 
+}
+
+class SimpleDeletableBox extends SimpleBox {
+    renderUI() {
+        var $deleteBtn = $('<button>Remove</button>').addClass('control');
+        this.$el.append($deleteBtn);
+
+        $deleteBtn.on('click', () => {
+            this.parentElement.removeChildElement(this);
+            this.parentElement.layout();
+        });
+    }
+
+    setLabel(label) {
+        this.label = label;
+        this.$el.text(this.label);
+        this.renderUI();
+    }
 }
 
